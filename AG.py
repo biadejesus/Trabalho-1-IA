@@ -1,5 +1,5 @@
 import csv
-import numpy as np
+# import numpy as np
 dic = {}
 
 arquivos = ['LREN3.SA.csv', 'VIVT3.SA.csv']
@@ -26,7 +26,9 @@ def calcula_rsi(dic):
     rsi = {}
     cont=0
     aux = 0
+    print(dic)
     for i in dic:
+        print("AAA" , i)
         for j in range(len(dic[i])):
             diferenca = float(dic[i][j]['Close'])-float(dic[i][j]['Open'])
             if ( diferenca > 0 ):
@@ -47,9 +49,9 @@ def calcula_rsi(dic):
         print(rsi)
         aux = 0
             
-def popinicial (n):
-    matriz_pop = np.random.multinomial(100, np.ones(10)/10, size=n)
-    matriz_pop = [list(x) for x in matriz_pop]
-    print(matriz_pop)
+# def popinicial (n):
+#     matriz_pop = np.random.multinomial(100, np.ones(10)/10, size=n)
+#     matriz_pop = [list(x) for x in matriz_pop]
+#     print(matriz_pop)
 
 calcula_rsi(dic)

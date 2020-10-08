@@ -1,10 +1,10 @@
 import csv
 import numpy as np
+import copy
 from random import randint
 from operator import itemgetter
 
-
-dic = {}
+dicAG = {}
 
 arquivos = ['LREN3.SA.csv', 'VIVT3.SA.csv', 'CIEL3.SA.csv', 'CSNA3.SA.csv', 'GRND3.SA.csv', 'WEGE3.SA.csv', 'JSLG3.SA.csv', 'LEVE3.SA.csv', 'SBSP3.SA.csv', 'UGPA3.SA.csv']
 
@@ -15,18 +15,18 @@ for i in range(len(arquivos)):
         for row in reader:
             if row['Date'][0:4] != '2016':
                 result.append(dict(row))
-        dic[arquivos[i]] = result
+        dicAG[arquivos[i]] = result
 
-def calcula_rsi(dic):
+def calcula_rsi(dicAG):
     ganhos = 0
     perdas = 0
     result = 0
     rsi = {}
     cont=0
     aux = 0
-    for i in dic:
-        for j in range(len(dic[i])-1):
-            diferenca = float(dic[i][j+1]['Close'])-float(dic[i][j]['Close'])
+    for i in dicAG:
+        for j in range(len(dicAG[i])-1):
+            diferenca = float(dicAG[i][j+1]['Close'])-float(dicAG[i][j]['Close'])
             if ( diferenca > 0 ):
                 ganhos += diferenca
             else:
@@ -125,8 +125,7 @@ def atualiza_pop(filho, rsi, populacao):
         populacao[fit_pop[len(fit_pop)-1][0]] = filho
     return populacao
 
-rsi = calcula_rsi(dic)
-populacao = popinicial(1000)
+rsi = calcula_rsi(dicAG)
 
 def ag(populacao):
     n =0
@@ -137,18 +136,15 @@ def ag(populacao):
         filho = cruzamento(pai, mae, populacao)
         filho = mutacao(filho)
         pop = atualiza_pop(filho, rsi, populacao)
-        if(n % 10 == 0):
-            for i in range(len(pop)):
-                fit_pop[i] = fitness(rsi, pop[i])
-            fit_pop = sorted(fit_pop.items(), key=itemgetter(1), reverse=True)
-            resultado = pop[fit_pop[0][0]]
+        for i in range(len(pop)):
+            fit_pop[i] = fitness(rsi, pop[i])
+        fit_pop = sorted(fit_pop.items(), key=itemgetter(1), reverse=True)
+        resultado = pop[fit_pop[0][0]]
         n+=1
     final = {}
     k=0
     for i in resultado:
         final[arquivos[k]] = i
         k+=1
-    print(final)       
-
-ag(populacao)
+    return final      
 
